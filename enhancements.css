@@ -1,0 +1,136 @@
+/* Motion is progressive: every element is visible before JavaScript runs. */
+:root{--motion-ease:cubic-bezier(.2,.75,.25,1);--motion-duration:620ms}
+.motion-enter{animation:content-arrive var(--motion-duration) var(--motion-ease) var(--motion-delay,0ms) both}
+html[data-motion="on"] dialog[open]{animation:dialog-arrive 320ms var(--motion-ease) both}
+html[data-motion="on"] dialog[open]::backdrop{animation:backdrop-arrive 300ms ease both}
+html[data-motion="on"] .language-menu:not([hidden]){animation:menu-arrive 200ms var(--motion-ease) both;transform-origin:top center}
+html[data-motion="on"] .toast:not([hidden]){animation:status-arrive 220ms ease-out both}
+.primary-button,.popup-locate-button,.voice-link,.language-button,.language-menu button,.phrase-chips button,.landmark-chip,.popup-map-tools>button,.destination-search button,.row-button,.close-button,.listen-button{transition:transform 220ms var(--motion-ease),box-shadow 220ms var(--motion-ease),background-color 220ms ease,border-color 220ms ease,color 220ms ease}
+.service-card{transition:transform 350ms var(--motion-ease),box-shadow 350ms var(--motion-ease)}
+.circle-arrow{transition:background-color 220ms ease,border-color 220ms ease}
+.mic-button{position:relative;transition:transform 240ms var(--motion-ease),box-shadow 240ms var(--motion-ease),background-color 240ms ease}
+.mic-button::after{content:"";position:absolute;inset:-9px;border:1px solid #dfb25c70;border-radius:inherit;opacity:0;transition:opacity 240ms ease;pointer-events:none}
+@media(hover:hover) and (pointer:fine){
+ .primary-button:hover,.popup-locate-button:hover,.voice-link:hover,.phrase-chips button:hover,.landmark-chip:hover,.popup-map-tools>button:hover{transform:translateY(-2px);box-shadow:0 5px 14px #1a58431a}
+ .row-button:hover,.close-button:hover,.listen-button:hover{transform:translateY(-1px);box-shadow:0 3px 9px #1a58431c}
+ .service-card:hover{transform:translateY(-5px);box-shadow:0 15px 29px #1d6c6826}
+ .service-card:hover .circle-arrow{background:#ffffff24;border-color:#f0d39b}
+ .mic-button:hover::after{opacity:1}
+}
+.primary-button:active,.popup-locate-button:active,.voice-link:active,.phrase-chips button:active,.landmark-chip:active,.popup-map-tools>button:active,.close-button:active,.row-button:active{transform:translateY(0) scale(.98)}
+@keyframes content-arrive{from{opacity:.25;transform:translateY(17px)}to{opacity:1;transform:translateY(0)}}
+@keyframes dialog-arrive{from{opacity:.3}to{opacity:1}}
+@keyframes backdrop-arrive{from{opacity:0}to{opacity:1}}
+@keyframes menu-arrive{from{opacity:.2;transform:translateY(-5px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes status-arrive{from{opacity:.25}to{opacity:1}}
+
+/* Match the same composition in left-to-right interface languages. */
+html[dir="ltr"] .skip-link{right:auto;left:16px}
+html[dir="ltr"] .language-menu{left:auto;right:0}
+html[dir="ltr"] .city-badge .badge-dot{margin-right:0;margin-left:16px}
+html[dir="ltr"] .service-card{text-align:left;border-radius:78px 20px 78px 20px}
+html[dir="ltr"] .card-shade{background:linear-gradient(90deg,rgba(16,73,68,.95) 4%,rgba(25,89,80,.73) 43%,rgba(0,0,0,.05) 78%)}
+html[dir="ltr"] .service-kicker{max-width:58%}
+html[dir="ltr"] .service-content strong{max-width:62%;font-size:25px;line-height:1.35;letter-spacing:-.5px}
+html[dir="ltr"] .service-bottom{max-width:67%;font-size:10px;line-height:1.4}
+html[dir="ltr"] .bus-image{left:auto;right:-53px;transform:none}
+html[dir="ltr"] .parking-card .bus-image{left:auto;right:-53px}
+html[dir="ltr"] .service-card:hover .bus-image{transform:translateX(5px)}
+html[dir="ltr"] .circle-arrow .icon,html[dir="ltr"] .row-button .icon,html[dir="ltr"] .destination-results>button>.icon:last-child,html[dir="ltr"] #destination-directions>.icon{transform:rotate(180deg)}
+html[dir="ltr"] .schedule-card{border-left:0;border-right:10px solid var(--teal);border-radius:22px 22px 85px 22px}
+html[dir="ltr"] th:first-child,html[dir="ltr"] td:first-child{text-align:left;padding-right:6px;padding-left:9px}
+html[dir="ltr"] .filter-label select{padding-right:31px;padding-left:12px}
+html[dir="ltr"] .filter-label>.icon{left:auto;right:9px}
+html[dir="ltr"] .online-dot{margin-left:0;margin-right:7px}
+html[dir="ltr"] .location-section{padding-left:25px;padding-right:40px;border-radius:80px 25px 80px 25px}
+html[dir="ltr"] .location-copy{padding-right:0;padding-left:17px}
+html[dir="ltr"] .map-frame{border-radius:58px 18px 58px 18px}
+html[dir="ltr"] .map-label{right:auto;left:16px}
+html[dir="ltr"] .route-stations{border-right:0;border-left:2px solid #d7e6dc;padding-right:0;padding-left:20px}
+html[dir="ltr"] .route-stations li:before{right:auto;left:-27px}
+html[dir="ltr"] .makkah-hero{border-radius:100px 23px 100px 23px}
+html[dir="ltr"] .makkah-hero-shade{background:linear-gradient(90deg,#174e4ce8 4%,#1a65598c 46%,#173e3c08 83%)}
+html[dir="ltr"] .makkah-hero-star{left:auto;right:30px}
+html[dir="ltr"] .makkah-hero-title h3{letter-spacing:-.5px}
+html[dir="ltr"] .gold-ribbon{margin-right:0;margin-left:24px;padding-right:40px;padding-left:30px;border-radius:8px 45px 8px 45px;letter-spacing:-.3px}
+html[dir="ltr"] .destination-search{direction:ltr;border-radius:17px 17px 60px 17px}
+html[dir="ltr"] .destination-search button{border-radius:12px 12px 35px 12px}
+html[dir="ltr"] .destination-results>button,html[dir="ltr"] .landmark-chip{text-align:left}
+html[dir="ltr"] .destination-results>button>.icon:last-child{margin-right:0;margin-left:auto}
+html[dir="ltr"] .popup-map-wrap{border-radius:90px 22px 90px 22px}
+html[dir="ltr"] .makkah-place-popup{direction:ltr;text-align:left}
+html[dir="ltr"] .landmarks-art>img{border-radius:90px 23px 90px 23px}
+html[dir="ltr"] .landmarks-art .gold-ribbon{right:auto;left:10px;margin:0;padding-right:40px;padding-left:27px}
+html[dir="ltr"] .art-caption{left:auto;right:17px}
+html[dir="ltr"] .intro h1{line-height:1.35;letter-spacing:-.6px;max-width:780px}
+html[dir="ltr"] .section-heading h2{font-size:21px;line-height:1.45}
+html[dir="ltr"] .header-inner{gap:22px}
+html[dir="ltr"] .header-inner nav{gap:22px}
+html[dir="ltr"] .nav-link,html[dir="ltr"] .voice-link{font-size:12px}
+html[dir="ltr"] .brand{text-align:start}
+html[lang="ur"]{--font:Cairo,"Segoe UI",Tahoma,Arial,sans-serif}
+html[lang="ur"] .intro h1,html[lang="ur"] .service-content strong,html[lang="ur"] .section-heading h2,html[lang="ur"] .gold-ribbon,html[lang="ur"] .makkah-hero-title h3{letter-spacing:0;line-height:1.65}
+html[lang="ur"] .service-content strong{font-size:25px}
+html[lang="ur"] .service-kicker{max-width:65%;line-height:1.8}
+html[lang="ur"] .service-bottom{max-width:72%;line-height:1.6}
+html[lang^="zh"]{--font:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",Cairo,Arial,sans-serif}
+html[lang^="zh"] .intro h1,html[lang^="zh"] .service-content strong,html[lang^="zh"] .gold-ribbon,html[lang^="zh"] .section-heading h2,html[lang^="zh"] .makkah-hero-title h3{letter-spacing:.02em}
+html[lang^="zh"] .service-content strong{line-height:1.5;font-size:27px}
+html[lang^="zh"] .intro-copy,html[lang^="zh"] .dialog-note{line-height:1.9}
+/* Long translations must wrap without changing the brand artwork. */
+.section-heading{gap:10px}.heading-with-icon{min-width:0}.heading-with-icon>div{min-width:0}.section-heading h2{overflow-wrap:anywhere}.header-actions{min-width:0}.language-menu button{gap:16px}.language-menu button span{white-space:normal}.translation-tag{flex-wrap:wrap}.assistant-top{align-items:flex-start}.language-button{min-height:36px}.voice-link span{line-height:1.4}.popup-map-heading>div{min-width:0}.popup-map-footer>a{overflow-wrap:anywhere}.destination-detail .primary-button{white-space:normal;text-align:center}.brand-mark,.footer-brand>svg{flex-shrink:0}
+
+@media(min-width:1440px){html[dir="ltr"] .bus-image,html[dir="ltr"] .parking-card .bus-image{right:-45px}html[dir="ltr"] .service-content strong{font-size:28px}}
+@media(max-width:1050px){html[dir="ltr"] .service-card{border-radius:60px 18px 60px 18px}html[dir="ltr"] .bus-image,html[dir="ltr"] .parking-card .bus-image{right:-45px}html[dir="ltr"] .service-content strong{font-size:23px}html[dir="ltr"] .location-section{padding-right:25px}html[dir="ltr"] .location-copy{padding-left:10px}html[dir="ltr"] .header-inner{gap:16px}html[dir="ltr"] .header-inner nav{gap:17px}html[dir="ltr"] .nav-link,html[dir="ltr"] .voice-link{font-size:11px}}
+@media(max-width:780px){html[dir="ltr"] .service-card{border-radius:50px 16px 50px 16px}html[dir="ltr"] .bus-image,html[dir="ltr"] .parking-card .bus-image{right:-36px}html[dir="ltr"] .service-content strong{font-size:21px}html[dir="ltr"] .service-kicker{font-size:8px}html[dir="ltr"] .service-bottom{font-size:8px}html[dir="ltr"] .route-card .service-content,html[dir="ltr"] .parking-card .service-content{background:linear-gradient(90deg,#195f58d4,transparent 80%)}html[dir="ltr"] .schedule-card{border-right-width:12px}html[dir="ltr"] .location-section{padding:20px;border-radius:60px 20px 60px 20px}html[dir="ltr"] .location-copy{padding-left:8px}html[dir="ltr"] .map-frame{border-radius:58px 18px 58px 18px}html[dir="ltr"] .map-label{left:10px}}
+@media(max-width:680px){html[dir="ltr"] .makkah-hero{border-radius:80px 18px 80px 18px}html[dir="ltr"] .gold-ribbon{margin-left:15px;padding-right:32px;padding-left:23px}html[dir="ltr"] .destination-search{border-radius:14px 14px 47px 14px}html[dir="ltr"] .destination-search button{border-radius:10px 10px 28px 10px}html[dir="ltr"] .popup-map-wrap{border-radius:70px 18px 70px 18px}html[dir="ltr"] .destination-detail .primary-button{margin-right:0;margin-left:auto}html[dir="ltr"] .landmarks-art>img{border-radius:65px 18px 65px 18px}}
+@media(max-width:560px){
+ html[dir="ltr"] .header-inner,html[lang="ur"] .header-inner{flex-wrap:wrap;row-gap:7px;padding-block:11px}
+ html[dir="ltr"] .header-actions,html[lang="ur"] .header-actions{margin-inline-start:auto}
+ html[dir="ltr"] .voice-link span,html[lang="ur"] .voice-link span{max-width:100px;white-space:normal}
+ html[dir="ltr"] .language-menu{right:-8px;left:auto;min-width:220px;max-width:calc(100vw - 34px)}
+ html[dir="ltr"] .intro{flex-wrap:wrap;row-gap:10px}
+ html[dir="ltr"] .intro>div:first-child{flex:1 1 100%;min-width:0}
+ html[dir="ltr"] .intro h1{font-size:28px;line-height:1.35;max-width:100%}
+ html[dir="ltr"] .city-badge{margin:0;padding:0}
+ html[dir="ltr"] .service-card{border-radius:63px 18px 63px 18px}
+ html[dir="ltr"] .service-content{padding-right:29px;padding-left:29px}
+ html[dir="ltr"] .service-content strong{font-size:28px;line-height:1.3}
+ html[dir="ltr"] .service-kicker{font-size:10px;max-width:60%}
+ html[dir="ltr"] .service-bottom{font-size:10px;max-width:67%}
+ html[dir="ltr"] .bus-image{right:-13px;left:auto}
+ html[dir="ltr"] .parking-card .bus-image{right:-12px;left:auto}
+ html[dir="ltr"] .route-card .service-content,html[dir="ltr"] .parking-card .service-content{background:linear-gradient(90deg,#1d6c6822,transparent 65%)}
+ html[dir="ltr"] .card-shade{background:linear-gradient(90deg,#135a54ed 7%,#195b538c 47%,#0000 83%)}
+ html[dir="ltr"] .schedule-card{border-right-width:10px;border-radius:16px 16px 65px 16px}
+ html[dir="ltr"] th:first-child,html[dir="ltr"] td:first-child{padding-left:2px;padding-right:3px}
+ html[dir="ltr"] .filter-label select{padding-left:8px;padding-right:28px}
+ html[dir="ltr"] .filter-label>.icon{left:auto;right:8px}
+ html[dir="ltr"] .location-section{padding:0 10px 10px 0;border-radius:60px 17px 60px 17px}
+ html[dir="ltr"] .location-copy{padding:24px 25px 22px;border-radius:60px 17px 0 0}
+ html[dir="ltr"] .location-copy .primary-button{left:auto;right:20px}
+ html[dir="ltr"] .map-frame{border-radius:0 0 53px 12px}
+ html[dir="ltr"] .map-label{right:auto;left:15px}
+ html[lang="ur"] .intro h1{font-size:27px}
+ html[lang="ur"] .service-content strong{font-size:27px;line-height:1.45}
+ html[lang="ur"] .service-kicker,html[lang="ur"] .service-bottom{font-size:10px}
+ html[lang^="zh"] .intro h1{font-size:28px}
+}
+@media(max-width:430px){html[dir="ltr"] .makkah-hero{border-radius:65px 15px 65px 15px}html[dir="ltr"] .makkah-hero-star{left:auto;right:20px}html[dir="ltr"] .gold-ribbon{margin-left:10px;padding-right:26px;padding-left:22px;border-radius:7px 32px 7px 32px}html[dir="ltr"] .destination-search{border-radius:12px 12px 41px 12px}html[dir="ltr"] .destination-search button{border-radius:8px 8px 24px 8px}html[dir="ltr"] .popup-map-wrap{border-radius:55px 16px 55px 16px}html[dir="ltr"] .landmarks-art>img{border-radius:55px 15px 55px 15px}html[dir="ltr"] .landmarks-art .gold-ribbon{right:auto;left:6px;margin:0;padding-right:28px;padding-left:22px}html[dir="ltr"] .art-caption{left:auto;right:12px}html[dir="ltr"] .section-heading h2{font-size:20px}html[dir="ltr"] .destination-search input{font-size:14px}}
+@media(max-width:370px){html[dir="ltr"] .service-content{padding-left:24px}html[dir="ltr"] .bus-image,html[dir="ltr"] .parking-card .bus-image{right:-10px}html[dir="ltr"] .service-content strong{font-size:25px}html[dir="ltr"] .location-copy .primary-button{left:auto;right:13px}}
+
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto!important}
+ .motion-enter,html[data-motion="on"] dialog[open],html[data-motion="on"] dialog[open]::backdrop,html[data-motion="on"] .language-menu:not([hidden]),html[data-motion="on"] .toast:not([hidden]){animation:none!important}
+ .service-card,.bus-image,.primary-button,.popup-locate-button,.voice-link,.language-button,.language-menu button,.phrase-chips button,.landmark-chip,.popup-map-tools>button,.destination-search button,.row-button,.close-button,.listen-button,.mic-button,.mic-button::after,.circle-arrow{transition:none!important}
+ .service-card:hover,.primary-button:hover,.popup-locate-button:hover,.voice-link:hover,.phrase-chips button:hover,.landmark-chip:hover,.popup-map-tools>button:hover,.row-button:hover,.close-button:hover,.listen-button:hover,.mic-button:hover{transform:none!important}
+ .mic-button.recording,.waveform.listening i{animation:none!important}
+}
+html[data-motion="off"] .motion-enter,html[data-motion="off"] dialog[open],html[data-motion="off"] dialog[open]::backdrop,html[data-motion="off"] .language-menu:not([hidden]),html[data-motion="off"] .toast:not([hidden]){animation:none!important}
+
+@media(prefers-reduced-motion:reduce){
+ html[dir="rtl"] .service-card:hover .bus-image{transform:scaleX(-1)!important}
+ html[dir="ltr"] .service-card:hover .bus-image{transform:none!important}
+}
+
+[data-i18n-break]{white-space:pre-line}.language-menu strong{font-size:12px;font-weight:700}.language-menu button[aria-pressed="true"]{background:#edf5ee;color:var(--teal)}

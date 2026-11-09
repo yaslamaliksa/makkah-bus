@@ -1,6 +1,8 @@
 'use strict';
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => [...document.querySelectorAll(selector)];
+const appText = (source, params = {}) => window.I18n?.t(source, params) ?? source.replace(/\{(\w+)\}/g, (_, key) => String(params[key] ?? `{${key}}`));
+const appNumber = value => window.I18n?.formatNumber(value) ?? Number(value).toLocaleString('ar-SA');
 const icon = (name, extra = '') => `<svg class="icon ${extra}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
 const routes = [
   { id: 'A1', time: '11:00', period: 'صباحًا', stop: 'A', origin: 'مواقف كدي', via: 'منطقة أجياد', end: 'محيط المسجد الحرام', lat: 21.3899, lon: 39.8254 },
@@ -11,27 +13,28 @@ const languages = {
   en: { name: 'English', arabic: 'الإنجليزية', locale: 'en-US' },
   ur: { name: 'اردو', arabic: 'الأردية', locale: 'ur-PK' },
   id: { name: 'Indonesia', arabic: 'الإندونيسية', locale: 'id-ID' },
-  tr: { name: 'Türkçe', arabic: 'التركية', locale: 'tr-TR' }
+  tr: { name: 'Türkçe', arabic: 'التركية', locale: 'tr-TR' },
+  zh: { name: '简体中文', arabic: 'الصينية المبسطة', locale: 'zh-CN' }
 };
 const phrases = [
-  { ar: 'أين موقف الحافلات؟', en: 'Where is the bus stop?', ur: 'بس اسٹاپ کہاں ہے؟', id: 'Di mana halte bus?', tr: 'Otobüs durağı nerede?' },
-  { ar: 'أريد الذهاب إلى الحرم', en: 'I would like to go to the Grand Mosque.', ur: 'میں حرم جانا چاہتا ہوں۔', id: 'Saya ingin pergi ke Masjidil Haram.', tr: 'Mescid-i Haram’a gitmek istiyorum.' },
-  { ar: 'متى تغادر الحافلة؟', en: 'When does the bus leave?', ur: 'بس کب روانہ ہوگی؟', id: 'Kapan bus berangkat?', tr: 'Otobüs ne zaman kalkıyor?' },
-  { ar: 'شكرًا جزيلًا', en: 'Thank you very much.', ur: 'بہت شکریہ۔', id: 'Terima kasih banyak.', tr: 'Çok teşekkür ederim.' }
+  { ar: 'أين موقف الحافلات؟', en: 'Where is the bus stop?', ur: 'بس اسٹاپ کہاں ہے؟', id: 'Di mana halte bus?', tr: 'Otobüs durağı nerede?', zh: '巴士站在哪里？' },
+  { ar: 'أريد الذهاب إلى الحرم', en: 'I would like to go to the Grand Mosque.', ur: 'میں حرم جانا چاہتا ہوں۔', id: 'Saya ingin pergi ke Masjidil Haram.', tr: 'Mescid-i Haram’a gitmek istiyorum.', zh: '我想去禁寺。' },
+  { ar: 'متى تغادر الحافلة؟', en: 'When does the bus leave?', ur: 'بس کب روانہ ہوگی؟', id: 'Kapan bus berangkat?', tr: 'Otobüs ne zaman kalkıyor?', zh: '巴士什么时候出发？' },
+  { ar: 'شكرًا جزيلًا', en: 'Thank you very much.', ur: 'بہت شکریہ۔', id: 'Terima kasih banyak.', tr: 'Çok teşekkür ederim.', zh: '非常感谢。' }
 ];
 let targetLanguage = 'en';
 let selectedPhrase = null;
 let toastTimer;
 function notify(message) {
   clearTimeout(toastTimer);
-  $('#toast').textContent = message;
+  $('#toast').textContent = appText(message);
   $('#toast').hidden = false;
   toastTimer = setTimeout(() => { $('#toast').hidden = true; }, 4200);
 }
 function renderSchedule() {
   const filter = $('#bus-filter').value;
   const selected = routes.filter(route => filter === 'all' || route.id === filter);
-  $('#schedule-rows').innerHTML = selected.map(route => `<tr><td><span class="bus-label">${icon('bus')}<bdi>${route.id}</bdi></span></td><td><span class="time">${route.time}<small dir="rtl">${route.period}</small></span></td><td><span class="stop-tag">${route.stop}</span></td><td><button class="row-button" data-route="${route.id}" aria-label="تفاصيل الحافلة ${route.id}">${icon('arrow')}</button></td></tr>`).join('');
+  $('#schedule-rows').innerHTML = selected.map(route => `<tr><td><span class="bus-label">${icon('bus')}<bdi>${route.id}</bdi></span></td><td><span class="time">${route.time}<small dir="${document.documentElement.dir || 'rtl'}">${appText(route.period)}</small></span></td><td><span class="stop-tag">${route.stop}</span></td><td><button class="row-button" data-route="${route.id}" aria-label="${appText('تفاصيل الحافلة {id}', { id: route.id })}">${icon('arrow')}</button></td></tr>`).join('');
 }
 $('#bus-filter').addEventListener('change', renderSchedule);
 $('#schedule-rows').addEventListener('click', event => {
@@ -39,14 +42,19 @@ $('#schedule-rows').addEventListener('click', event => {
   if (button) openRoutes(button.dataset.route);
 });
 renderSchedule();
-const now = new Date();
 const timeZone = 'Asia/Riyadh';
-$('#short-date').textContent = new Intl.DateTimeFormat('ar-SA', { timeZone, day: 'numeric', month: 'long', calendar: 'gregory' }).format(now);
-const weekday = new Intl.DateTimeFormat('ar-SA', { timeZone, weekday: 'long' }).format(now);
-const hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic-umalqura', { timeZone, day: 'numeric', month: 'long', year: 'numeric' }).format(now);
-const gregorian = new Intl.DateTimeFormat('en-GB', { timeZone, day: '2-digit', month: '2-digit', year: 'numeric' }).format(now);
-$('#full-date').textContent = `${weekday}، ${hijri}  |  ${gregorian}`;
-$('#copyright-year').textContent = new Intl.DateTimeFormat('en', { timeZone, year: 'numeric' }).format(now);
+function renderDates() {
+  const now = new Date();
+  const locale = window.I18n?.localeTag || 'ar-SA';
+  $('#short-date').textContent = new Intl.DateTimeFormat(locale, { timeZone, day: 'numeric', month: 'long', calendar: 'gregory' }).format(now);
+  const weekday = new Intl.DateTimeFormat(locale, { timeZone, weekday: 'long' }).format(now);
+  const hijri = new Intl.DateTimeFormat(locale, { timeZone, calendar: 'islamic-umalqura', day: 'numeric', month: 'long', year: 'numeric' }).format(now);
+  const gregorian = new Intl.DateTimeFormat(locale, { timeZone, calendar: 'gregory', day: '2-digit', month: '2-digit', year: 'numeric' }).format(now);
+  $('#full-date').textContent = `${weekday} · ${hijri}  |  ${gregorian}`;
+  $('#copyright-year').textContent = new Intl.DateTimeFormat('en', { timeZone, year: 'numeric' }).format(now);
+  ['#short-date', '#full-date', '#copyright-year'].forEach(selector => $(selector).setAttribute('data-i18n-ignore', 'true'));
+}
+renderDates();
 
 const dialog = $('#info-dialog');
 let lastFocus = null;
@@ -93,18 +101,35 @@ $('#language-button').addEventListener('click', () => setLanguageMenu(languageMe
 $('#language-button').addEventListener('keydown', event => { if (event.key === 'ArrowDown') { event.preventDefault(); setLanguageMenu(true); languageMenu.querySelector('button').focus(); } });
 document.addEventListener('click', event => { if (!event.target.closest('.language-wrap')) setLanguageMenu(false); });
 document.addEventListener('keydown', event => { if (event.key === 'Escape' && !languageMenu.hidden) { setLanguageMenu(false); $('#language-button').focus(); } });
-function chooseLanguage(code) {
-  if (!languages[code]) return;
-  targetLanguage = code;
-  $('#target-language').textContent = languages[code].name;
-  $('#language-label').textContent = languages[code].arabic;
-  $$('[data-language]').forEach(button => button.classList.toggle('selected', button.dataset.language === code));
-  if (selectedPhrase !== null) showPhrase(selectedPhrase);
-  setLanguageMenu(false);
-  notify(`تم اختيار ${languages[code].arabic} للترجمة الصوتية`);
+const siteLanguageNames = { ar: 'العربية', en: 'English', ur: 'اردو', zh: '简体中文' };
+function refreshSiteLanguageControls() {
+  const locale = window.I18n?.locale || 'ar';
+  $('#language-label').setAttribute('data-i18n-ignore', 'true');
+  $('#language-label').textContent = siteLanguageNames[locale] || siteLanguageNames.ar;
+  $$('[data-site-language]').forEach(button => {
+    const selected = button.dataset.siteLanguage === locale;
+    button.classList.toggle('selected', selected);
+    button.setAttribute('aria-pressed', String(selected));
+  });
 }
-$$('[data-language]').forEach(button => button.addEventListener('click', () => chooseLanguage(button.dataset.language)));
-$('#change-language').addEventListener('click', () => openDialog('اختر لغة المساعدة', 'ترجمة العبارات الإرشادية', `<div class="language-options">${Object.entries(languages).map(([code, language]) => `<div class="stop-item"><div><strong>${language.name}</strong><small>${language.arabic}</small></div><button class="primary-button" data-dialog-language="${code}">${targetLanguage === code ? 'محددة حاليًا' : 'اختيار'}</button></div>`).join('')}</div>`));
+function chooseLanguage(code, silent = false) {
+  if (!languages[code]) return;
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  targetLanguage = code;
+  $('#target-language').setAttribute('data-i18n-ignore', 'true');
+  $('#target-language').textContent = languages[code].name;
+  if (selectedPhrase !== null) showPhrase(selectedPhrase);
+  if (!silent) notify(appText('تم اختيار {name} للترجمة الصوتية', { name: appText(languages[code].arabic) }));
+}
+$$('[data-site-language]').forEach(button => button.addEventListener('click', () => {
+  const locale = button.dataset.siteLanguage;
+  window.I18n?.setLocale(locale);
+  refreshSiteLanguageControls();
+  setLanguageMenu(false);
+  notify(appText('تم تغيير لغة الموقع إلى {name}', { name: siteLanguageNames[locale] }));
+}));
+refreshSiteLanguageControls();
+$('#change-language').addEventListener('click', () => openDialog('اختر لغة المساعدة', 'ترجمة العبارات الإرشادية', `<div class="language-options">${Object.entries(languages).map(([code, language]) => `<div class="stop-item"><div><strong data-i18n-ignore lang="${language.locale}" dir="auto">${language.name}</strong><small>${language.arabic}</small></div><button class="primary-button" data-dialog-language="${code}">${targetLanguage === code ? 'محددة حاليًا' : 'اختيار'}</button></div>`).join('')}</div>`));
 
 const barHeights = [8,14,22,31,18,11,6,12,26,34,20,15,8,17,30,36,20,11,9,24,37,28,13,7,19,30,39,23,16,8,12,23,33,20,11,7,16,27,19,10];
 $('#waveform').innerHTML = barHeights.map((height, index) => `<i style="height:${height}px;animation-delay:${index * -63}ms"></i>`).join('');
@@ -112,11 +137,15 @@ function showPhrase(index, recognizedText) {
   const phrase = phrases[index];
   if (!phrase) return;
   selectedPhrase = index;
+  $('#transcript').setAttribute('data-i18n-ignore', 'true');
+  $('#transcript').lang = 'ar';
+  $('#transcript').dir = 'rtl';
   $('#transcript').textContent = recognizedText || phrase.ar;
   $('#transcript').classList.add('has-text');
   $('#translation-result').hidden = false;
+  $('#translation-text').setAttribute('data-i18n-ignore', 'true');
   $('#translation-text').textContent = phrase[targetLanguage];
-  $('#translation-text').lang = targetLanguage;
+  $('#translation-text').lang = targetLanguage === 'zh' ? 'zh-Hans' : targetLanguage;
   $('#translation-text').dir = targetLanguage === 'ur' ? 'rtl' : 'ltr';
   $('#record-status').textContent = 'الترجمة جاهزة — اضغط على السماعة للاستماع';
 }
@@ -134,6 +163,7 @@ $('#speak-button').addEventListener('click', () => {
 const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recognition;
 let isRecording = false;
+let hasRecognitionOutcome = false;
 function recordingState(active) {
   isRecording = active;
   $('#record-button').classList.toggle('recording', active);
@@ -143,6 +173,7 @@ function recordingState(active) {
 }
 function normalizeArabic(text) { return text.replace(/[أإآ]/g, 'ا').replace(/ى/g, 'ي').replace(/[؟?،,.!ًٌٍَُِّْ]/g, '').trim(); }
 function recognizePhrase(text) {
+  hasRecognitionOutcome = true;
   const normalized = normalizeArabic(text);
   let index = phrases.findIndex(phrase => normalizeArabic(phrase.ar) === normalized);
   if (index < 0) {
@@ -153,6 +184,9 @@ function recognizePhrase(text) {
   }
   if (index >= 0) { showPhrase(index, text); return; }
   selectedPhrase = null;
+  $('#transcript').setAttribute('data-i18n-ignore', 'true');
+  $('#transcript').lang = 'ar';
+  $('#transcript').dir = 'rtl';
   $('#transcript').textContent = text;
   $('#transcript').classList.add('has-text');
   $('#translation-result').hidden = true;
@@ -163,39 +197,83 @@ $('#record-button').addEventListener('click', () => {
   if (isRecording) { recognition.stop(); return; }
   if ('speechSynthesis' in window) window.speechSynthesis.cancel();
   recognition = new Recognition();
+  hasRecognitionOutcome = false;
   recognition.lang = 'ar-SA';
   recognition.interimResults = false;
   recognition.continuous = false;
   recognition.onstart = () => { recordingState(true); $('#record-status').textContent = 'أستمع إليك… تحدّث بالعربية'; };
   recognition.onresult = event => recognizePhrase(event.results[0][0].transcript);
   recognition.onerror = event => {
+    hasRecognitionOutcome = true;
     const errors = { 'not-allowed': 'لم يُمنح إذن الميكروفون. يمكنك اختيار عبارة جاهزة.', 'no-speech': 'لم أسمع كلامًا. اضغط وحاول مرة أخرى.', 'audio-capture': 'لم يُعثر على ميكروفون. استخدم العبارات الجاهزة.', network: 'تعذّر الاتصال بخدمة التعرّف على الصوت. استخدم العبارات الجاهزة.', aborted: 'توقف التسجيل.' };
     $('#record-status').textContent = errors[event.error] || 'تعذّر التعرّف على الصوت. حاول مرة أخرى أو اختر عبارة جاهزة.';
     recordingState(false);
   };
-  recognition.onend = () => { recordingState(false); if ($('#record-status').textContent === 'أستمع إليك… تحدّث بالعربية') $('#record-status').textContent = 'انتهى الاستماع. حاول مرة أخرى أو اختر عبارة جاهزة.'; };
+  recognition.onend = () => { recordingState(false); if (!hasRecognitionOutcome) $('#record-status').textContent = 'انتهى الاستماع. حاول مرة أخرى أو اختر عبارة جاهزة.'; };
   try { recognition.start(); } catch { recordingState(false); $('#record-status').textContent = 'تعذّر بدء التسجيل. اختر عبارة سريعة بالأسفل.'; }
 });
 
+let homepageLocationState = 'idle';
+let homepageLocationAccuracy = null;
+let homepageLocationError = null;
+const homepageLocationErrors = {
+  1: 'لم يُمنح إذن الموقع. يمكنك السماح به من إعدادات المتصفح أو استكشاف خريطة مكة.',
+  2: 'الموقع غير متاح الآن. تحقق من تفعيل خدمات الموقع وحاول مجددًا.',
+  3: 'انتهت مهلة تحديد الموقع. حاول مجددًا في مكان تتوفر فيه إشارة أفضل.'
+};
+function renderHomepageLocationStatus() {
+  const buttonLabel = $('#locate-button span');
+  const status = $('#location-status');
+  if (homepageLocationState === 'requesting') {
+    buttonLabel.textContent = appText('جارٍ تحديد الموقع…');
+    status.textContent = appText('بانتظار إذنك للوصول إلى الموقع…');
+  } else if (homepageLocationState === 'located') {
+    buttonLabel.textContent = appText('تحديث موقعي');
+    status.textContent = appText('تم تحديد موقعك. دقة الموقع التقريبية: {accuracy} مترًا.', { accuracy: appNumber(Math.round(homepageLocationAccuracy)) });
+  } else if (homepageLocationState === 'error') {
+    buttonLabel.textContent = appText('تحديث موقعي');
+    status.textContent = appText(homepageLocationErrors[homepageLocationError] || 'تعذّر تحديد موقعك. حاول مجددًا.');
+  } else if (homepageLocationState === 'unsupported') {
+    buttonLabel.textContent = appText('تحديد موقعي');
+    status.textContent = appText('تحديد الموقع غير متاح في هذا المتصفح. يمكنك استكشاف خريطة مكة.');
+  } else {
+    buttonLabel.textContent = appText('تحديد موقعي');
+    status.textContent = appText('سيُطلب إذنك للوصول إلى الموقع.');
+  }
+}
 $('#locate-button').addEventListener('click', () => {
-  if (!navigator.geolocation) { $('#location-status').textContent = 'تحديد الموقع غير متاح في هذا المتصفح. يمكنك استكشاف خريطة مكة.'; return; }
+  if (!navigator.geolocation) { homepageLocationState = 'unsupported'; renderHomepageLocationStatus(); return; }
   const button = $('#locate-button');
   button.disabled = true;
-  button.querySelector('span').textContent = 'جارٍ تحديد الموقع…';
-  $('#location-status').textContent = 'بانتظار إذنك للوصول إلى الموقع…';
-  function resetLocationButton() { button.disabled = false; button.querySelector('span').textContent = 'تحديث موقعي'; }
+  homepageLocationState = 'requesting';
+  renderHomepageLocationStatus();
   navigator.geolocation.getCurrentPosition(position => {
     const { latitude, longitude, accuracy } = position.coords;
     $('#main-map').src = mapUrl(latitude, longitude, .008);
     $('#open-location').href = externalMap(latitude, longitude);
     $('#map-caption').textContent = 'موقعك الحالي';
     $('#map-subtitle').textContent = 'حسب الموقع الذي أرسله جهازك';
-    $('#location-status').textContent = `تم تحديد موقعك. دقة الموقع التقريبية: ${Math.round(accuracy).toLocaleString('ar-SA')} مترًا.`;
-    resetLocationButton();
+    homepageLocationAccuracy = accuracy;
+    homepageLocationState = 'located';
+    button.disabled = false;
+    renderHomepageLocationStatus();
   }, error => {
-    const errors = { 1: 'لم يُمنح إذن الموقع. يمكنك السماح به من إعدادات المتصفح أو استكشاف خريطة مكة.', 2: 'الموقع غير متاح الآن. تحقق من تفعيل خدمات الموقع وحاول مجددًا.', 3: 'انتهت مهلة تحديد الموقع. حاول مجددًا في مكان تتوفر فيه إشارة أفضل.' };
-    $('#location-status').textContent = errors[error.code] || 'تعذّر تحديد موقعك. حاول مجددًا.';
-    resetLocationButton();
+    homepageLocationError = error.code;
+    homepageLocationState = 'error';
+    button.disabled = false;
+    renderHomepageLocationStatus();
   }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 });
 });
+function applySiteLocale() {
+  refreshSiteLanguageControls();
+  renderSchedule();
+  renderDates();
+  renderHomepageLocationStatus();
+  const locale = window.I18n?.locale || 'ar';
+  if (locale !== 'ar' && languages[locale]) chooseLanguage(locale, true);
+  else if (selectedPhrase !== null) showPhrase(selectedPhrase);
+  if (isRecording) $('#record-status').textContent = 'أستمع إليك… تحدّث بالعربية';
+}
+document.addEventListener('localechange', applySiteLocale);
+applySiteLocale();
 window.addEventListener('pagehide', () => { if (recognition && isRecording) recognition.abort(); if ('speechSynthesis' in window) window.speechSynthesis.cancel(); });
