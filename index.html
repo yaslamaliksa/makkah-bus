@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1d6c68"><meta name="description" content="رفيق رحلتك في مكة المكرمة. استكشف الخريطة ومسارات الحافلات ومواقفها، مع جدول توضيحي ومساعدة صوتية.">
+<title>دليل الحافلات | إنجاز وابي تهامة</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg"><link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="assets/vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="makkah-map.css">
+<script src="app.js" defer></script>
+<script src="assets/vendor/leaflet/leaflet.js" defer></script>
+<script src="makkah-map.js" defer></script>
+</head>
+<body>
+<svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="8" y="2" width="8" height="14" rx="4"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3m-4 0h8M9 7h6M9 11h6"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12h18M5 6h14M5 18h14"/></symbol>
+<symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+<symbol id="i-bus" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="16" rx="3"/><path d="M4 12h16M8 3v9m8-9v9M7 19v2m10-2v2M8 16h.01M16 16h.01M1 7v5m22-5v5"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+<symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 1v4m0 14v4M1 12h4m14 0h4"/></symbol>
+<symbol id="i-volume" viewBox="0 0 24 24"><path d="m11 4-6 5H2v6h3l6 5V4Zm4 4a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+<symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+<symbol id="i-external" viewBox="0 0 24 24"><path d="M14 3h7v7m0-7L10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></symbol>
+<symbol id="brand-mark" viewBox="0 0 8 8">
+<path fill="#f77b4e" d="M4 0 4 2 3 3 2 2Z"/>
+<path fill="#ec6637" d="M2 2 3 3 1 5 0 4Z"/>
+<path fill="#36a3a0" d="M4 0 6 2 5 3 4 2Z"/>
+<path fill="#153338" d="M6 2 8 4 7 5 5 3Z"/>
+<path fill="#5bb6b0" d="M4 2 5 3 4 4Z"/>
+<path fill="#1b7474" d="M3 3 4 4 3 5 2 4Z"/>
+<path fill="#1b7474" d="M5 3 6 4 5 5 4 4Z"/>
+<path fill="#5bb6b0" d="M2 4 3 5 2 6Z"/>
+<path fill="#5bb6b0" d="M6 4 7 5 6 6Z"/>
+<path fill="#ec6637" d="M4 4 4 8 2 6Z"/>
+<path fill="#153338" d="M4 4 6 6 4 8Z"/>
+</symbol>
+</defs></svg>
+<a class="skip-link" href="#main">تخطي إلى المحتوى</a>
+<header class="site-header"><div class="header-inner">
+<a class="brand" href="#" aria-label="إنجاز وابي تهامة — الرئيسية"><svg class="brand-mark"><use href="#brand-mark"/></svg><span><strong>إنجاز وابي تهامة</strong><small>INGAZ TAHAMA</small></span></a>
+<nav aria-label="القائمة الرئيسية"><a class="nav-link active" href="#main">الرئيسية</a><a class="nav-link" href="#schedule">جدول الحافلات</a><a class="nav-link" href="#location">الخريطة</a></nav>
+<div class="header-actions"><div class="language-wrap"><button class="language-button" id="language-button" aria-label="اختيار لغة الترجمة الصوتية" aria-expanded="false" aria-controls="language-menu"><svg class="icon"><use href="#i-globe"/></svg><span id="language-label">اللغة</span><svg class="icon tiny"><use href="#i-chevron"/></svg></button><div id="language-menu" class="language-menu" hidden><p>لغة الترجمة الصوتية</p><button data-language="en" lang="en">English <span>الإنجليزية</span></button><button data-language="ur" lang="ur">اردو <span>الأردية</span></button><button data-language="id" lang="id">Indonesia <span>الإندونيسية</span></button><button data-language="tr" lang="tr">Türkçe <span>التركية</span></button></div></div><a class="voice-link" href="#assistant"><svg class="icon"><use href="#i-mic"/></svg><span>الترجمة الصوتية</span></a></div>
+</div></header>
+<main id="main" class="page-shell">
+<section class="intro" aria-labelledby="page-title"><div><p class="eyebrow"><span class="little-star">✦</span> ضيوف الرحمن، أهلًا بكم</p><h1 id="page-title">رحلتك في مكة، <span>أسهل.</span></h1><p class="intro-copy">كل ما تحتاجه للتنقّل… في مكان واحد.</p></div><div class="city-badge"><svg class="icon"><use href="#i-pin"/></svg><span>مكة المكرمة<small>المملكة العربية السعودية</small></span><span class="badge-dot"></span></div></section>
+<section class="quick-links" aria-label="استكشف خدمات التنقل">
+<button class="service-card makkah-card" id="open-makkah-map" aria-haspopup="dialog" aria-controls="info-dialog" aria-label="افتح نافذة خريطة مكة"><img src="assets/kaaba.jpg" alt="الكعبة المشرفة في المسجد الحرام" class="kaaba-image" fetchpriority="high"><div class="card-shade"></div><span class="service-content"><span class="service-kicker">اكتشف وجهتك</span><strong>خريطة<br>مكة</strong><span class="service-bottom">استكشف خريطة مكة <span class="circle-arrow"><svg class="icon"><use href="#i-arrow"/></svg></span></span></span></button>
+<button class="service-card route-card" data-dialog="routes"><span class="road-lines"></span><img src="assets/bus-route.png" alt="حافلة ركاب بيضاء" class="bus-image"><span class="service-content"><span class="service-kicker">طريقك إلى وجهتك</span><strong>مسار<br>الحافلة</strong><span class="service-bottom">تعرّف على المسار <span class="circle-arrow"><svg class="icon"><use href="#i-arrow"/></svg></span></span></button>
+<button class="service-card parking-card" data-dialog="stops"><span class="road-lines"></span><img src="assets/bus-parking.png" alt="حافلة سياحية حديثة" class="bus-image"><span class="service-content"><span class="service-kicker">نقطة بداية رحلتك</span><strong>مواقف<br>الحافلات</strong><span class="service-bottom">استكشف المواقف <span class="circle-arrow"><svg class="icon"><use href="#i-arrow"/></svg></span></span></button>
+</section>
+<div class="dashboard-grid">
+<section class="schedule-section" id="schedule" aria-labelledby="schedule-title"><div class="section-heading"><div class="heading-with-icon"><span class="section-icon"><svg class="icon"><use href="#i-bus"/></svg></span><div><p class="section-kicker">خطّط لرحلتك</p><h2 id="schedule-title">جدول الحافلات</h2></div></div><span class="demo-badge">بيانات توضيحية</span></div>
+<div class="schedule-card"><div class="schedule-toolbar"><div class="date-line"><span class="date-label">مواعيد المغادرة</span><span id="short-date"></span></div><label class="filter-label"><span class="sr-only">تصفية حسب الحافلة</span><select id="bus-filter"><option value="all">جميع الحافلات</option><option value="A1">الحافلة A1</option><option value="A3">الحافلة A3</option><option value="A7">الحافلة A7</option></select><svg class="icon tiny"><use href="#i-chevron"/></svg></label></div>
+<div class="table-wrap"><table><thead><tr><th scope="col">اسم الحافلة</th><th scope="col">وقت المغادرة</th><th scope="col">مكان الموقف</th><th scope="col"><span class="sr-only">عرض التفاصيل</span></th></tr></thead><tbody id="schedule-rows"></tbody></table></div>
+<div class="schedule-footer"><svg class="icon"><use href="#i-clock"/></svg><span id="full-date"></span></div></div><p class="schedule-note">المواعيد المعروضة من التصميم المرجعي للتوضيح. يُرجى تأكيد رحلتك مع المشغّل.</p>
+</section>
+<section class="assistant-section" id="assistant" aria-labelledby="assistant-title"><div class="section-heading"><div class="heading-with-icon"><span class="section-icon gold"><svg class="icon"><use href="#i-mic"/></svg></span><div><p class="section-kicker">نتواصل معك بلغتك</p><h2 id="assistant-title">تحدّث مع المضيف</h2></div></div><span class="online-dot" title="مساعد العبارات"></span></div>
+<div class="assistant-card"><div class="assistant-top"><span class="translation-tag"><svg class="icon"><use href="#i-globe"/></svg> العربية <span>↔</span> <span id="target-language">English</span></span><button class="small-text-button" id="change-language">تغيير اللغة</button></div><div class="voice-area"><div class="waveform" id="waveform" aria-hidden="true"></div><button class="mic-button" id="record-button" aria-label="ابدأ التحدث بالعربية" aria-pressed="false"><svg><use href="#i-mic"/></svg></button><p id="record-status" aria-live="polite">اضغط على الميكروفون وابدأ الحديث</p></div><div class="transcript-box"><span class="transcript-label">الترجمة الصوتية</span><p id="transcript">ستظهر هنا كتابة الترجمة الصوتية…</p><div id="translation-result" class="translation-result" hidden><p id="translation-text" dir="auto"></p><button id="speak-button" class="listen-button" aria-label="استمع إلى الترجمة"><svg class="icon"><use href="#i-volume"/></svg></button></div></div><div class="phrase-area"><p>أو اختر عبارة سريعة</p><div class="phrase-chips"><button data-phrase="0">أين موقف الحافلات؟</button><button data-phrase="1">أريد الذهاب إلى الحرم</button><button data-phrase="2">متى تغادر الحافلة؟</button></div></div><small class="voice-note">عبارات إرشادية جاهزة، والتعرّف على الصوت حسب دعم المتصفح.</small></div>
+</section>
+</div>
+<section class="location-section" id="location" aria-labelledby="location-title"><div class="location-copy"><p class="section-kicker"><span class="little-star">✦</span> أينما كنت، نحن معك</p><h2 id="location-title">مكانك <span>الآن</span></h2><p>اعرف موقعك، واستكشف محيطك<br>لتبدأ رحلتك بكل اطمئنان.</p><button class="primary-button" id="locate-button"><svg class="icon"><use href="#i-target"/></svg><span>تحديد موقعي</span></button><p id="location-status" class="location-status" role="status">سيُطلب إذنك للوصول إلى الموقع.</p><a class="map-external" id="open-location" href="https://www.openstreetmap.org/#map=15/21.4225/39.8262" target="_blank" rel="noopener noreferrer">فتح الخريطة الكاملة<svg class="icon tiny"><use href="#i-external"/></svg></a></div><div class="map-frame"><iframe id="main-map" loading="lazy" title="خريطة مكة المكرمة" src="https://www.openstreetmap.org/export/embed.html?bbox=39.803%2C21.410%2C39.846%2C21.435&amp;layer=mapnik&amp;marker=21.4225%2C39.8262"></iframe><div class="map-label"><span class="map-label-icon"><svg class="icon"><use href="#i-pin"/></svg></span><div><strong id="map-caption">مكة المكرمة</strong><span id="map-subtitle">المسجد الحرام والمناطق المحيطة</span></div></div></div></section>
+<div class="assurance-strip"><span><svg class="icon"><use href="#i-pin"/></svg> وجهتك أقرب</span><i></i><span><svg class="icon"><use href="#i-bus"/></svg> رحلتك أوضح</span><i></i><span><svg class="icon"><use href="#i-globe"/></svg> نتواصل بلغتك</span></div>
+</main>
+<footer class="site-footer"><a href="#" class="footer-brand" aria-label="إنجاز وابي تهامة"><svg><use href="#brand-mark"/></svg><strong>INGAZ TAHAMA</strong><span>شركة إنجاز وابي تهامة</span></a><p>نرافقك في رحلتك، ونقرّب لك وجهتك.</p><small>جميع الحقوق محفوظة لشركة إنجاز وابي تهامة © <span id="copyright-year">2026</span></small></footer>
+<dialog id="info-dialog" aria-labelledby="dialog-title"><div class="dialog-header"><div><p class="section-kicker" id="dialog-kicker"></p><h2 id="dialog-title"></h2></div><button class="close-button" id="close-dialog" aria-label="إغلاق"><svg class="icon"><use href="#i-close"/></svg></button></div><div id="dialog-body"></div></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+</body></html>
